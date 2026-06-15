@@ -1,0 +1,740 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Project Study Automation</title>
+<style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+        --blue: #1463FF;
+        --blue-dark: #0A3FC4;
+        --green: #00C896;
+        --bg: #F2F4F8;
+        --card: #FFFFFF;
+        --text: #1A1D29;
+        --text-sub: #6B7280;
+        --radius: 20px;
+    }
+
+    body {
+        font-family: -apple-system, 'Apple SD Gothic Neo', 'Pretendard', 'Noto Sans KR', Roboto, sans-serif;
+        background: var(--bg);
+        color: var(--text);
+        line-height: 1.6;
+        display: flex;
+        justify-content: center;
+        padding: 0;
+    }
+
+    .app {
+        width: 100%;
+        max-width: 430px;
+        background: var(--bg);
+        min-height: 100vh;
+        padding-bottom: 40px;
+    }
+
+    /* ===== Hero ===== */
+    .hero {
+        background: linear-gradient(160deg, var(--blue) 0%, var(--blue-dark) 100%);
+        color: white;
+        padding: 48px 24px 36px;
+        border-radius: 0 0 32px 32px;
+        text-align: center;
+    }
+
+    .hero .eyebrow {
+        display: inline-block;
+        background: rgba(255,255,255,0.15);
+        padding: 6px 14px;
+        border-radius: 999px;
+        font-size: 12px;
+        font-weight: 600;
+        letter-spacing: 0.5px;
+        margin-bottom: 16px;
+    }
+
+    .hero h1 {
+        font-size: 28px;
+        font-weight: 800;
+        margin-bottom: 10px;
+        letter-spacing: -0.5px;
+    }
+
+    .hero .subtitle {
+        font-size: 13px;
+        opacity: 0.9;
+        margin-bottom: 14px;
+        line-height: 1.6;
+    }
+
+    .hero .intro {
+        font-size: 13px;
+        opacity: 0.85;
+        margin-bottom: 24px;
+        padding: 0 4px;
+    }
+
+    .hero-buttons {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+
+    /* ===== Section / Card ===== */
+    .section {
+        padding: 24px 20px 4px;
+    }
+
+    .section-title {
+        font-size: 17px;
+        font-weight: 800;
+        margin-bottom: 12px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .card {
+        background: var(--card);
+        border-radius: var(--radius);
+        padding: 20px;
+        box-shadow: 0 4px 20px rgba(20, 40, 160, 0.06);
+        margin-bottom: 14px;
+    }
+
+    /* ===== Buttons ===== */
+    .btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 6px;
+        padding: 13px 20px;
+        border-radius: 999px;
+        font-size: 13px;
+        font-weight: 700;
+        text-decoration: none;
+        border: none;
+        cursor: pointer;
+        transition: transform 0.15s, box-shadow 0.15s;
+        white-space: nowrap;
+    }
+
+    .btn:active { transform: scale(0.97); }
+
+    .btn-primary {
+        background: white;
+        color: var(--blue-dark);
+        box-shadow: 0 4px 14px rgba(0,0,0,0.12);
+    }
+
+    .btn-ghost {
+        background: rgba(255,255,255,0.12);
+        color: white;
+        border: 1px solid rgba(255,255,255,0.35);
+    }
+
+    .btn-block {
+        width: 100%;
+        background: var(--blue);
+        color: white;
+        box-shadow: 0 6px 16px rgba(20, 99, 255, 0.3);
+    }
+
+    .btn-green {
+        background: var(--green);
+        color: white;
+        box-shadow: 0 6px 16px rgba(0, 200, 150, 0.3);
+    }
+
+    /* ===== 프로젝트 개요 ===== */
+    .overview-row {
+        display: flex;
+        justify-content: space-between;
+        padding: 10px 0;
+        font-size: 13px;
+        border-bottom: 1px solid #F0F1F4;
+        gap: 12px;
+    }
+    .overview-row:last-child { border-bottom: none; }
+    .overview-row .label {
+        color: var(--text-sub);
+        font-weight: 600;
+        flex-shrink: 0;
+        width: 78px;
+    }
+    .overview-row .value {
+        text-align: right;
+        font-weight: 500;
+    }
+
+    .tag-group {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 6px;
+        justify-content: flex-end;
+    }
+
+    .tag {
+        background: #EEF2FF;
+        color: var(--blue);
+        font-size: 11px;
+        font-weight: 700;
+        padding: 4px 10px;
+        border-radius: 999px;
+    }
+
+    /* ===== 자동화 흐름 / 주요 성과 (accordion) ===== */
+    .step-card {
+        background: var(--card);
+        border-radius: var(--radius);
+        padding: 16px 18px;
+        margin-bottom: 10px;
+        box-shadow: 0 4px 16px rgba(20, 40, 160, 0.05);
+        cursor: pointer;
+        transition: box-shadow 0.2s;
+    }
+
+    .step-card.open {
+        box-shadow: 0 6px 22px rgba(20, 40, 160, 0.12);
+    }
+
+    .step-head {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+    }
+
+    .step-num {
+        width: 34px;
+        height: 34px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, var(--blue), var(--blue-dark));
+        color: white;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 800;
+        font-size: 14px;
+        flex-shrink: 0;
+    }
+
+    .step-card.achievement .step-num {
+        background: linear-gradient(135deg, var(--green), #00A37C);
+    }
+
+    .step-title {
+        flex: 1;
+        font-size: 14px;
+        font-weight: 700;
+    }
+
+    .step-arrow {
+        font-size: 12px;
+        color: var(--text-sub);
+        transition: transform 0.25s;
+        flex-shrink: 0;
+    }
+
+    .step-card.open .step-arrow {
+        transform: rotate(180deg);
+    }
+
+    .step-body {
+        max-height: 0;
+        overflow: hidden;
+        transition: max-height 0.3s ease;
+    }
+
+    .step-card.open .step-body {
+        max-height: 200px;
+    }
+
+    .step-body-inner {
+        padding-top: 12px;
+        font-size: 12.5px;
+        color: var(--text-sub);
+        line-height: 1.7;
+    }
+
+    /* ===== 결과 미리보기 ===== */
+    .browser-mock {
+        background: #F7F8FA;
+        border-radius: 14px;
+        overflow: hidden;
+        border: 1px solid #E8EAED;
+        margin-bottom: 14px;
+    }
+
+    .browser-bar {
+        background: #E8EAED;
+        padding: 8px 12px;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+    }
+
+    .browser-dot {
+        width: 9px;
+        height: 9px;
+        border-radius: 50%;
+    }
+    .browser-dot.red { background: #FF5F57; }
+    .browser-dot.yellow { background: #FEBC2E; }
+    .browser-dot.green { background: #28C840; }
+
+    .browser-url {
+        flex: 1;
+        background: white;
+        border-radius: 6px;
+        padding: 4px 10px;
+        font-size: 10px;
+        color: var(--text-sub);
+        margin-left: 6px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    .browser-content {
+        padding: 24px 16px;
+        text-align: center;
+        background: linear-gradient(135deg, #EEF2FF, #F0FFFA);
+    }
+
+    .browser-content .icon {
+        font-size: 36px;
+        margin-bottom: 8px;
+    }
+
+    .browser-content .title {
+        font-size: 14px;
+        font-weight: 800;
+        color: var(--blue-dark);
+        margin-bottom: 4px;
+    }
+
+    .browser-content .desc {
+        font-size: 11px;
+        color: var(--text-sub);
+    }
+
+    .video-mock {
+        margin-top: 14px;
+        border-radius: 12px;
+        overflow: hidden;
+        cursor: pointer;
+    }
+
+    .video-thumb {
+        background: linear-gradient(135deg, var(--blue), #5B7FFF);
+        padding: 28px 16px;
+        text-align: center;
+        color: white;
+        border-radius: 12px;
+        transition: transform 0.15s;
+    }
+
+    .video-mock:active .video-thumb {
+        transform: scale(0.98);
+    }
+
+    .play-circle {
+        width: 48px;
+        height: 48px;
+        border-radius: 50%;
+        background: rgba(255,255,255,0.2);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 18px;
+        margin: 0 auto 10px;
+    }
+
+    .video-caption {
+        font-size: 13px;
+        font-weight: 700;
+    }
+
+    /* ===== 개선 예정 ===== */
+    .todo-item {
+        display: flex;
+        align-items: flex-start;
+        gap: 10px;
+        font-size: 13px;
+        padding: 10px 0;
+        border-bottom: 1px solid #F0F1F4;
+    }
+    .todo-item:last-child { border-bottom: none; }
+
+    .todo-check {
+        width: 20px;
+        height: 20px;
+        border-radius: 6px;
+        border: 2px solid var(--blue);
+        flex-shrink: 0;
+        margin-top: 1px;
+    }
+
+    /* ===== 마무리 메시지 ===== */
+    .closing-card {
+        background: linear-gradient(160deg, var(--blue-dark), var(--blue));
+        color: white;
+        border-radius: var(--radius);
+        padding: 24px 20px;
+        text-align: center;
+    }
+
+    .closing-card .icon {
+        font-size: 28px;
+        margin-bottom: 10px;
+    }
+
+    #typing-text {
+        font-size: 13px;
+        line-height: 1.8;
+        min-height: 90px;
+        opacity: 0.95;
+    }
+
+    .cursor {
+        display: inline-block;
+        width: 2px;
+        height: 14px;
+        background: var(--green);
+        margin-left: 2px;
+        vertical-align: middle;
+        animation: blink 0.8s step-end infinite;
+    }
+
+    @keyframes blink {
+        50% { opacity: 0; }
+    }
+
+    .footer-note {
+        text-align: center;
+        font-size: 11px;
+        color: var(--text-sub);
+        padding: 20px 24px 0;
+    }
+</style>
+</head>
+<body>
+<div class="app">
+
+    <!-- 1. 상단 히어로 -->
+    <section class="hero">
+        <span class="eyebrow">PORTFOLIO RESULT</span>
+        <h1>Project Study Automation</h1>
+        <p class="subtitle">Playwright 기반 콘텐츠 수집 · YouTube 플레이리스트 생성 · 결과 시각화 자동화</p>
+        <p class="intro">
+            반복적인 콘텐츠 수집과 정리 작업을 자동화하고,<br>
+            그 과정과 결과를 한눈에 확인할 수 있는<br>
+            리포트 페이지로 정리했습니다.
+        </p>
+        <div class="hero-buttons">
+            <a class="btn btn-primary" href="https://testhuh.github.io/project_study/" target="_blank">📊 결과 페이지 보기</a>
+            <a class="btn btn-ghost" href="https://github.com/testhuh/project_study" target="_blank">🔗 GitHub 미리보기</a>
+        </div>
+    </section>
+
+    <!-- 2. 프로젝트 개요 -->
+    <div class="section">
+        <div class="section-title">📋 프로젝트 개요</div>
+        <div class="card">
+            <div class="overview-row">
+                <div class="label">프로젝트명</div>
+                <div class="value">Project Study Automation</div>
+            </div>
+            <div class="overview-row">
+                <div class="label">사용 기술</div>
+                <div class="tag-group">
+                    <span class="tag">Python</span>
+                    <span class="tag">Playwright</span>
+                    <span class="tag">HTML</span>
+                    <span class="tag">CSS</span>
+                    <span class="tag">JavaScript</span>
+                    <span class="tag">GitHub Pages</span>
+                    <span class="tag">.env</span>
+                </div>
+            </div>
+            <div class="overview-row">
+                <div class="label">구현 방식</div>
+                <div class="value">일반 API 연동이 아닌<br>브라우저 자동화(Playwright) 기반</div>
+            </div>
+            <div class="overview-row">
+                <div class="label">목표</div>
+                <div class="value">반복 작업 자동화 및<br>결과 리포트 제공</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 3. 자동화 흐름 단계 -->
+    <div class="section">
+        <div class="section-title">🔄 자동화 흐름 단계</div>
+
+        <div class="step-card" data-target="step-1">
+            <div class="step-head">
+                <div class="step-num">①</div>
+                <div class="step-title">링크 콘텐츠 수집</div>
+                <div class="step-arrow">▼</div>
+            </div>
+            <div class="step-body" id="step-1">
+                <div class="step-body-inner">
+                    Playwright로 대상 페이지에 접속해 필요한 콘텐츠 정보(제목, 링크, 메타데이터 등)를 자동으로 수집합니다.
+                </div>
+            </div>
+        </div>
+
+        <div class="step-card" data-target="step-2">
+            <div class="step-head">
+                <div class="step-num">②</div>
+                <div class="step-title">데이터 정리 및 가공</div>
+                <div class="step-arrow">▼</div>
+            </div>
+            <div class="step-body" id="step-2">
+                <div class="step-body-inner">
+                    수집한 원본 데이터를 정제하고, 다음 단계에서 활용할 수 있는 형식(CSV/JSON 등)으로 가공합니다.
+                </div>
+            </div>
+        </div>
+
+        <div class="step-card" data-target="step-3">
+            <div class="step-head">
+                <div class="step-num">③</div>
+                <div class="step-title">YouTube 재생목록 생성</div>
+                <div class="step-arrow">▼</div>
+            </div>
+            <div class="step-body" id="step-3">
+                <div class="step-body-inner">
+                    가공된 데이터를 기반으로 각 항목을 검색·매칭하여 YouTube 재생목록을 자동으로 생성합니다.
+                </div>
+            </div>
+        </div>
+
+        <div class="step-card" data-target="step-4">
+            <div class="step-head">
+                <div class="step-num">④</div>
+                <div class="step-title">HTML 리포트 생성</div>
+                <div class="step-arrow">▼</div>
+            </div>
+            <div class="step-body" id="step-4">
+                <div class="step-body-inner">
+                    실행 결과(성공/실패, 통계 등)를 시각적으로 확인할 수 있는 HTML 리포트를 자동으로 생성합니다.
+                </div>
+            </div>
+        </div>
+
+        <div class="step-card" data-target="step-5">
+            <div class="step-head">
+                <div class="step-num">⑤</div>
+                <div class="step-title">GitHub Pages 결과 배포</div>
+                <div class="step-arrow">▼</div>
+            </div>
+            <div class="step-body" id="step-5">
+                <div class="step-body-inner">
+                    생성된 리포트를 GitHub Pages에 자동 배포하여, 별도 설치 없이 웹에서 바로 결과를 공유합니다.
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 4. 주요 성과 -->
+    <div class="section">
+        <div class="section-title">🏆 주요 성과</div>
+
+        <div class="step-card achievement" data-target="ach-1">
+            <div class="step-head">
+                <div class="step-num">✓</div>
+                <div class="step-title">자동화 파이프라인 설계 경험</div>
+                <div class="step-arrow">▼</div>
+            </div>
+            <div class="step-body" id="ach-1">
+                <div class="step-body-inner">
+                    수집 → 가공 → 생성 → 배포까지 이어지는 전체 흐름을 설계하고 직접 구현했습니다.
+                </div>
+            </div>
+        </div>
+
+        <div class="step-card achievement" data-target="ach-2">
+            <div class="step-head">
+                <div class="step-num">✓</div>
+                <div class="step-title">Playwright 브라우저 자동화 구현</div>
+                <div class="step-arrow">▼</div>
+            </div>
+            <div class="step-body" id="ach-2">
+                <div class="step-body-inner">
+                    실제 브라우저 동작을 코드로 제어하여 콘텐츠를 수집하는 자동화 스크립트를 구현했습니다.
+                </div>
+            </div>
+        </div>
+
+        <div class="step-card achievement" data-target="ach-3">
+            <div class="step-head">
+                <div class="step-num">✓</div>
+                <div class="step-title">.env를 활용한 중요 설정 분리</div>
+                <div class="step-arrow">▼</div>
+            </div>
+            <div class="step-body" id="ach-3">
+                <div class="step-body-inner">
+                    API 키, 경로 등 민감한 설정값을 코드와 분리해 안전하게 관리했습니다.
+                </div>
+            </div>
+        </div>
+
+        <div class="step-card achievement" data-target="ach-4">
+            <div class="step-head">
+                <div class="step-num">✓</div>
+                <div class="step-title">GUI 실행 환경 구성</div>
+                <div class="step-arrow">▼</div>
+            </div>
+            <div class="step-body" id="ach-4">
+                <div class="step-body-inner">
+                    비개발자도 쉽게 실행할 수 있도록 간단한 GUI 실행 도구를 구성했습니다.
+                </div>
+            </div>
+        </div>
+
+        <div class="step-card achievement" data-target="ach-5">
+            <div class="step-head">
+                <div class="step-num">✓</div>
+                <div class="step-title">HTML 리포트 기반 결과 확인</div>
+                <div class="step-arrow">▼</div>
+            </div>
+            <div class="step-body" id="ach-5">
+                <div class="step-body-inner">
+                    실행 결과를 표와 진행률 등 시각적인 형태로 정리한 HTML 리포트로 확인할 수 있습니다.
+                </div>
+            </div>
+        </div>
+
+        <div class="step-card achievement" data-target="ach-6">
+            <div class="step-head">
+                <div class="step-num">✓</div>
+                <div class="step-title">GitHub Pages 렌더링 미리보기 제공</div>
+                <div class="step-arrow">▼</div>
+            </div>
+            <div class="step-body" id="ach-6">
+                <div class="step-body-inner">
+                    별도 설치 없이 웹 브라우저에서 바로 결과를 확인할 수 있는 미리보기 페이지를 제공합니다.
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 5. 결과 미리보기 -->
+    <div class="section">
+        <div class="section-title">🌐 결과 미리보기</div>
+        <div class="card">
+            <div class="browser-mock">
+                <div class="browser-bar">
+                    <span class="browser-dot red"></span>
+                    <span class="browser-dot yellow"></span>
+                    <span class="browser-dot green"></span>
+                    <div class="browser-url">testhuh.github.io/project_study/</div>
+                </div>
+                <div class="browser-content">
+                    <div class="icon">🎬</div>
+                    <div class="title">YouTube Playlist Builder</div>
+                    <div class="desc">Auto Archive System · 결과 리포트</div>
+                </div>
+            </div>
+            <div class="hero-buttons" style="margin-bottom: 14px;">
+                <a class="btn btn-block" style="flex:1;" href="https://testhuh.github.io/project_study/" target="_blank">결과 페이지 보기</a>
+                <a class="btn btn-green" style="flex:1;" href="https://testhuh.github.io/project_study/result_20260614_144629.html" target="_blank">📋 결과 보기 (HTML)</a>
+            </div>
+
+            <div class="video-mock" id="open-video">
+                <div class="video-thumb">
+                    <div class="play-circle">▶</div>
+                    <div class="video-caption">🎬 결과 영상 (720p)</div>
+                </div>
+            </div>
+            <div id="video-wrap" style="display:none; margin-top: 10px;">
+                <video controls style="width:100%; border-radius: 12px;" poster="https://via.placeholder.com/1280x720?text=Project+Study+Automation">
+                    <source src="https://github.com/testhuh/project/raw/main/disney_playlist_demo_web_720p.mp4" type="video/mp4">
+                    브라우저가 영상 재생을 지원하지 않습니다.
+                </video>
+            </div>
+        </div>
+    </div>
+
+    <!-- 6. 개선 예정 -->
+    <div class="section">
+        <div class="section-title">🛠️ 개선 예정</div>
+        <div class="card">
+            <div class="todo-item">
+                <div class="todo-check"></div>
+                <div>수집 안정성 개선</div>
+            </div>
+            <div class="todo-item">
+                <div class="todo-check"></div>
+                <div>예외 처리 강화</div>
+            </div>
+            <div class="todo-item">
+                <div class="todo-check"></div>
+                <div>UI 사용성 개선</div>
+            </div>
+            <div class="todo-item">
+                <div class="todo-check"></div>
+                <div>로그 관리 고도화</div>
+            </div>
+            <div class="todo-item">
+                <div class="todo-check"></div>
+                <div>재생목록 생성 정확도 향상</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 7. 마무리 메시지 -->
+    <div class="section">
+        <div class="closing-card">
+            <div class="icon">💬</div>
+            <div id="typing-text"></div>
+        </div>
+        <p class="footer-note">© 2026 Project Study Automation</p>
+    </div>
+
+</div>
+
+<script>
+    // 아코디언 (자동화 흐름 / 주요 성과)
+    document.querySelectorAll('.step-card').forEach(function (card) {
+        card.addEventListener('click', function () {
+            card.classList.toggle('open');
+        });
+    });
+
+    // 결과 영상 썸네일 클릭 시 영상 표시 및 재생
+    document.getElementById('open-video').addEventListener('click', function () {
+        var wrap = document.getElementById('video-wrap');
+        wrap.style.display = 'block';
+        this.style.display = 'none';
+        var video = wrap.querySelector('video');
+        video.play();
+    });
+
+    // 타이핑 효과
+    var fullText = "아직 부족한 부분이 많지만, 하나씩 보완해 나가면서 자동화와 웹 서비스 구현 역량을 기르는 좋은 경험이 되었습니다. 더 좋은 아이디어나 개선할 점이 있다면 언제든 편하게 알려주세요!";
+    var el = document.getElementById('typing-text');
+    var i = 0;
+
+    function typeWriter() {
+        if (i <= fullText.length) {
+            el.innerHTML = fullText.substring(0, i) + '<span class="cursor"></span>';
+            i++;
+            setTimeout(typeWriter, 35);
+        } else {
+            el.innerHTML = fullText + '<span class="cursor"></span>';
+        }
+    }
+
+    window.addEventListener('load', function () {
+        setTimeout(typeWriter, 400);
+    });
+</script>
+</body>
+</html>
