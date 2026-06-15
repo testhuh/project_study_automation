@@ -423,9 +423,20 @@
         animation: pulse 1s ease-in-out infinite;
     }
 
+    .video-badge .blink-text {
+        color: #FF5252;
+        font-weight: 800;
+        animation: blink-red 1s steps(1, start) infinite;
+    }
+
     @keyframes pulse {
         0%, 100% { opacity: 1; transform: scale(1); }
         50% { opacity: 0.4; transform: scale(0.7); }
+    }
+
+    @keyframes blink-red {
+        0%, 50% { opacity: 1; }
+        50.01%, 100% { opacity: 0.25; }
     }
 
     /* ===== 개선 예정 ===== */
@@ -761,7 +772,7 @@
 <div class="video-modal" id="video-modal">
     <div class="video-modal-inner">
         <button class="video-modal-close" id="close-video">✕</button>
-        <div class="video-badge" id="video-badge"><span class="dot"></span>자동화중</div>
+        <div class="video-badge" id="video-badge"><span class="dot"></span><span class="blink-text">자동화중</span></div>
         <video id="result-video" controls style="width:100%; border-radius: 12px; display:block;" poster="https://via.placeholder.com/1280x720?text=Project+Study+Automation">
             <source src="https://github.com/testhuh/project/raw/main/disney_playlist_demo_web_720p.mp4" type="video/mp4">
             브라우저가 영상 재생을 지원하지 않습니다.
