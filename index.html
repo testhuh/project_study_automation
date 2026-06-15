@@ -782,23 +782,20 @@
     var resultVideo = document.getElementById('result-video');
     var videoBadge = document.getElementById('video-badge');
 
-    resultVideo.addEventListener('play', function () {
-        videoBadge.classList.add('show');
-    });
-    resultVideo.addEventListener('pause', function () {
-        videoBadge.classList.remove('show');
-    });
-    resultVideo.addEventListener('ended', function () {
-        videoBadge.classList.remove('show');
-    });
-
     document.getElementById('open-video').addEventListener('click', function () {
         videoModal.classList.add('open');
-        resultVideo.play();
+        videoBadge.classList.add('show');
+        var playPromise = resultVideo.play();
+        if (playPromise && playPromise.catch) {
+            playPromise.catch(function () {
+                // 자동 재생이 막혀도 배지는 계속 표시
+            });
+        }
     });
 
     function closeVideoModal() {
         videoModal.classList.remove('open');
+        videoBadge.classList.remove('show');
         resultVideo.pause();
     }
 
