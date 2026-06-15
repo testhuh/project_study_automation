@@ -394,6 +394,40 @@
         cursor: pointer;
     }
 
+    .video-badge {
+        position: absolute;
+        top: 12px;
+        left: 12px;
+        background: rgba(20, 99, 255, 0.85);
+        color: white;
+        font-size: 12px;
+        font-weight: 700;
+        padding: 6px 12px;
+        border-radius: 999px;
+        z-index: 2;
+        display: none;
+        align-items: center;
+        gap: 6px;
+        backdrop-filter: blur(4px);
+    }
+
+    .video-badge.show {
+        display: inline-flex;
+    }
+
+    .video-badge .dot {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background: var(--green);
+        animation: pulse 1s ease-in-out infinite;
+    }
+
+    @keyframes pulse {
+        0%, 100% { opacity: 1; transform: scale(1); }
+        50% { opacity: 0.4; transform: scale(0.7); }
+    }
+
     /* ===== 개선 예정 ===== */
     .todo-item {
         display: flex;
@@ -727,6 +761,7 @@
 <div class="video-modal" id="video-modal">
     <div class="video-modal-inner">
         <button class="video-modal-close" id="close-video">✕</button>
+        <div class="video-badge" id="video-badge"><span class="dot"></span>자동화중</div>
         <video id="result-video" controls style="width:100%; border-radius: 12px; display:block;" poster="https://via.placeholder.com/1280x720?text=Project+Study+Automation">
             <source src="https://github.com/testhuh/project/raw/main/disney_playlist_demo_web_720p.mp4" type="video/mp4">
             브라우저가 영상 재생을 지원하지 않습니다.
@@ -745,6 +780,17 @@
     // 결과 영상 썸네일 클릭 시 2배 크기 모달로 재생
     var videoModal = document.getElementById('video-modal');
     var resultVideo = document.getElementById('result-video');
+    var videoBadge = document.getElementById('video-badge');
+
+    resultVideo.addEventListener('play', function () {
+        videoBadge.classList.add('show');
+    });
+    resultVideo.addEventListener('pause', function () {
+        videoBadge.classList.remove('show');
+    });
+    resultVideo.addEventListener('ended', function () {
+        videoBadge.classList.remove('show');
+    });
 
     document.getElementById('open-video').addEventListener('click', function () {
         videoModal.classList.add('open');
