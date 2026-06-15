@@ -359,6 +359,41 @@
         font-weight: 700;
     }
 
+    /* ===== 결과 영상 모달 (2x 크게보기) ===== */
+    .video-modal {
+        display: none;
+        position: fixed;
+        inset: 0;
+        background: rgba(10, 12, 24, 0.88);
+        z-index: 999;
+        align-items: center;
+        justify-content: center;
+        padding: 20px;
+    }
+
+    .video-modal.open {
+        display: flex;
+    }
+
+    .video-modal-inner {
+        position: relative;
+        width: min(880px, 96vw);
+    }
+
+    .video-modal-close {
+        position: absolute;
+        top: -42px;
+        right: 0;
+        width: 34px;
+        height: 34px;
+        border-radius: 50%;
+        background: rgba(255,255,255,0.15);
+        color: white;
+        border: none;
+        font-size: 16px;
+        cursor: pointer;
+    }
+
     /* ===== 개선 예정 ===== */
     .todo-item {
         display: flex;
@@ -645,12 +680,6 @@
                     <div class="video-caption">🎬 결과 영상 (720p)</div>
                 </div>
             </div>
-            <div id="video-wrap" style="display:none; margin-top: 10px;">
-                <video controls style="width:100%; border-radius: 12px;" poster="https://via.placeholder.com/1280x720?text=Project+Study+Automation">
-                    <source src="https://github.com/testhuh/project/raw/main/disney_playlist_demo_web_720p.mp4" type="video/mp4">
-                    브라우저가 영상 재생을 지원하지 않습니다.
-                </video>
-            </div>
 
             <a class="btn btn-green" style="width:100%; margin-top: 12px;" href="https://testhuh.github.io/project_study/result_20260614_144629.html" target="_blank">📋 결과 HTML 보기</a>
         </div>
@@ -694,6 +723,17 @@
 
 </div>
 
+<!-- 결과 영상 모달 (2배 크게 보기) -->
+<div class="video-modal" id="video-modal">
+    <div class="video-modal-inner">
+        <button class="video-modal-close" id="close-video">✕</button>
+        <video id="result-video" controls style="width:100%; border-radius: 12px; display:block;" poster="https://via.placeholder.com/1280x720?text=Project+Study+Automation">
+            <source src="https://github.com/testhuh/project/raw/main/disney_playlist_demo_web_720p.mp4" type="video/mp4">
+            브라우저가 영상 재생을 지원하지 않습니다.
+        </video>
+    </div>
+</div>
+
 <script>
     // 아코디언 (자동화 흐름 / 주요 성과)
     document.querySelectorAll('.step-card').forEach(function (card) {
@@ -702,13 +742,24 @@
         });
     });
 
-    // 결과 영상 썸네일 클릭 시 영상 표시 및 재생
+    // 결과 영상 썸네일 클릭 시 2배 크기 모달로 재생
+    var videoModal = document.getElementById('video-modal');
+    var resultVideo = document.getElementById('result-video');
+
     document.getElementById('open-video').addEventListener('click', function () {
-        var wrap = document.getElementById('video-wrap');
-        wrap.style.display = 'block';
-        this.style.display = 'none';
-        var video = wrap.querySelector('video');
-        video.play();
+        videoModal.classList.add('open');
+        resultVideo.play();
+    });
+
+    function closeVideoModal() {
+        videoModal.classList.remove('open');
+        resultVideo.pause();
+    }
+
+    document.getElementById('close-video').addEventListener('click', closeVideoModal);
+
+    videoModal.addEventListener('click', function (e) {
+        if (e.target === videoModal) closeVideoModal();
     });
 
     // 타이핑 효과
